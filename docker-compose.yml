@@ -1,0 +1,110 @@
+version: "3.7"
+
+services:
+
+  ch-zookeeper:
+    container_name: ch_zookeeper
+    image: zookeeper:3.6.1
+    ports:
+      - 2181:2181
+
+  ch-master:
+    container_name: ch_master
+    image: yandex/clickhouse-server:19.14.13.4
+    depends_on:
+      - ch-zookeeper
+      - ch-sub-1
+      - ch-sub-2
+      - ch-sub-3
+      - ch-sub-4
+    ports:
+      - 9000:9000
+      - 8123:8123
+    volumes:
+      - type: volume
+        source: ch-master-data
+        target: /var/lib/clickhouse
+      - type: volume
+        source: ch-master-logs
+        target: /var/log/clickhouse-server
+      - ./master-config.xml:/etc/clickhouse-server/config.xml
+
+  ch-sub-1:
+    container_name: ch_sub_1
+    image: yandex/clickhouse-server:19.14.13.4
+    depends_on:
+      - ch-zookeeper
+    ports:
+      - 9001:9000
+      - 8124:8123
+    volumes:
+      - type: volume
+        source: ch-sub-1-data
+        target: /var/lib/clickhouse
+      - type: volume
+        source: ch-sub-1-logs
+        target: /var/log/clickhouse-server
+      - ./sub-1-config.xml:/etc/clickhouse-server/config.xml
+
+  ch-sub-2:
+    container_name: ch_sub_2
+    image: yandex/clickhouse-server:19.14.13.4
+    depends_on:
+      - ch-zookeeper
+    ports:
+      - 9002:9000
+      - 8125:8123
+    volumes:
+      - type: volume
+        source: ch-sub-2-data
+        target: /var/lib/clickhouse
+      - type: volume
+        source: ch-sub-2-logs
+        target: /var/log/clickhouse-server
+      - ./sub-2-config.xml:/etc/clickhouse-server/config.xml
+
+  ch-sub-3:
+    container_name: ch_sub_3
+    image: yandex/clickhouse-server:19.14.13.4
+    depends_on:
+      - ch-zookeeper
+    ports:
+      - 9003:9000
+      - 8126:8123
+    volumes:
+      - type: volume
+        source: ch-sub-3-data
+        target: /var/lib/clickhouse
+      - type: volume
+        source: ch-sub-3-logs
+        target: /var/log/clickhouse-server
+      - ./sub-3-config.xml:/etc/clickhouse-server/config.xml
+
+  ch-sub-4:
+    container_name: ch_sub_4
+    image: yandex/clickhouse-server:19.14.13.4
+    depends_on:
+      - ch-zookeeper
+    ports:
+      - 9004:9000
+      - 8127:8123
+    volumes:
+      - type: volume
+        source: ch-sub-4-data
+        target: /var/lib/clickhouse
+      - type: volume
+        source: ch-sub-4-logs
+        target: /var/log/clickhouse-server
+      - ./sub-4-config.xml:/etc/clickhouse-server/config.xml
+
+volumes:
+  ch-master-data:
+  ch-master-logs:
+  ch-sub-1-data:
+  ch-sub-1-logs:
+  ch-sub-2-data:
+  ch-sub-2-logs:
+  ch-sub-3-data:
+  ch-sub-3-logs:
+  ch-sub-4-data:
+  ch-sub-4-logs:
